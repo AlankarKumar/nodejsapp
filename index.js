@@ -5,14 +5,16 @@ const StringDecoder = require("string_decoder").StringDecoder;
 const config = require("./config");
 const fs = require("fs");
 const _data = require("./lib/data");
+const handlers = require("./lib/handlers");
+const helpers = require("./lib/helpers");
 
 //Instantiating the http server
 const httpServer = http.createServer((req, res) => {
   unifiedServer(req, res);
 });
 
-//@Testing
-_data.delete("", "newFile", (err) => console.log("This was the error", err));
+// //@Testing
+// _data.delete("", "newFile", (err) => console.log("This was the error", err));
 
 //Start the httpServer
 httpServer.listen(config.httpPort, () =>
@@ -68,8 +70,8 @@ const unifiedServer = (req, res) => {
     const data = {
       trimmedPath: trimmedPath,
       queryStringObject: query,
-      method: method,
-      payload: buffer,
+      method: method.toLowerCase(),
+      payload: helpers.parseJsonToObject(buffer),
     };
 
     //Route the request to the handler specified in the router
@@ -90,20 +92,9 @@ const unifiedServer = (req, res) => {
   });
 };
 
-//Define the handlers
-const handlers = {};
-
-//Sample Handler
-handlers.ping = (data, callback) => {
-  callback(200, { name: "Ping Handler" });
-};
-
-//notfoundHandler
-handlers.notFound = (data, callback) => {
-  callback(404);
-};
-
 //Define a request router
 const router = {
   ping: handlers.ping,
+  users: handlers.users,
+  tokens: handlers.tokens,
 };
