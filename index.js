@@ -72,6 +72,7 @@ const unifiedServer = (req, res) => {
       queryStringObject: query,
       method: method.toLowerCase(),
       payload: helpers.parseJsonToObject(buffer),
+      headers: headers,
     };
 
     //Route the request to the handler specified in the router
